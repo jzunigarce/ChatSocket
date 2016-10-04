@@ -1,0 +1,98 @@
+body{
+  background-color: #1abc9c;
+}
+/*
+ *Login index
+ */
+.login{
+  margin-top: 100px;
+}
+.login > div:first-child{
+  background-color: #edeff1;
+  border-radius: 6px;
+  padding: 24px 38px 20px;
+}
+.login  .form-horizontal .form-group{
+  margin-right: 0;
+  margin-left: 0;
+}
+.login .input-group input[type='text'], .login .input-group input[type='password']{
+    border-right: 0
+}
+.login .input-group span{
+  background-color: #ffffff;
+  border-left: 0;
+  color: #edeff1;
+  top: 0;
+}
+.btn-login{
+  background: #1abc9c;
+  border-radius: 6px;
+  color: #ffffff;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.btn-login:hover, .btn-login:active:hover{
+  background: #48c9b0;
+  border-color: #48c9b0;
+  color: #ffffff;
+}
+/*
+ *Chat
+ */
+ .chat-body{
+   background: #DFDFDF;
+ }
+ .chat-body .content{
+   background: #1abc9c;
+   background: -webkit-linear-gradient(top, #1abc9c, #1abc9c 30%, #DFDFDF 30%, #DFDFDF);
+   background: -o-repeating-linear-gradient(top, #1abc9c, #1abc9c 30%, #DFDFDF 30%, #DFDFDF);
+   background: -moz-repeating-linear-gradient(top, #1abc9c, #1abc9c 30%, #DFDFDF 30%, #DFDFDF);
+   background: repeating-linear-gradient(top, #1abc9c, #1abc9c 30%, #DFDFDF 30%, #DFDFDF);
+   min-height: 500px;
+ }
+ .content .container{
+   padding-top: 20px;
+ }
+ .header-contact{
+   background-color: #EEEEEE;
+   font-size: 18px;
+   padding-top: 10px;
+   padding-bottom: 10px;
+ }
+ .avatar{
+  border-radius: 20px;
+  padding: 10px
+ }
+ .avatar-user{
+   color: #767676;
+   border: 1px solid #767676;
+ }
+ .avatar-contact{
+   background-color: #1f4d94;
+   border: 1px solid #1f4d94;
+   color: #ffffff;
+ }
+.icon-comment{
+  color: #767676;
+  float: right;
+  padding: 10px;
+}
+.body-contact{
+  background-color: #FFFFFF;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.search{
+  margin-bottom: 5px;
+}
+.search input{
+  border-color: #E7EBEA;
+}
+.contact-row{
+  border-top: 1px solid #EEEEEE;
+  border-bottom: 1px solid #EEEEEE;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
