@@ -1,3 +1,8 @@
+html, body{
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
 body{
   background-color: #1abc9c;
 }
@@ -33,7 +38,7 @@ body{
   padding-bottom: 10px;
 }
 
-.btn-login:hover, .btn-login:active:hover{
+.btn-login:focus, .btn-login:active, .btn-login:hover, .btn-login:active:hover{
   background: #48c9b0;
   border-color: #48c9b0;
   color: #ffffff;
@@ -50,12 +55,23 @@ body{
    background: -o-repeating-linear-gradient(top, #1abc9c, #1abc9c 30%, #DFDFDF 30%, #DFDFDF);
    background: -moz-repeating-linear-gradient(top, #1abc9c, #1abc9c 30%, #DFDFDF 30%, #DFDFDF);
    background: repeating-linear-gradient(top, #1abc9c, #1abc9c 30%, #DFDFDF 30%, #DFDFDF);
-   min-height: 500px;
+   /*min-height: 500px;*/
+   height: 100%;
  }
- .content .container{
+ .content .app{
+   height: calc(100% - 40px);
    padding-top: 20px;
  }
- .header-contact{
+ .content .app > .row{
+   height: 100%;
+ }
+ .contact, .chat{
+   height: 100%;
+ }
+ .contact{
+   background-color: #ffffff;
+ }
+ .header{
    background-color: #EEEEEE;
    font-size: 18px;
    padding-top: 10px;
@@ -93,6 +109,49 @@ body{
 .contact-row{
   border-top: 1px solid #EEEEEE;
   border-bottom: 1px solid #EEEEEE;
-  padding-top: 4px;
+  padding-top: 10px;
   padding-bottom: 4px;
+}
+.contact-name{
+  font-size: 16px;
+}
+.contact-last-msj{
+  font-size: 13px;
+}
+.contact-chat-time{
+  color: #bbbbbb;
+}
+.chat{
+  display: flex;
+  flex-direction: column;
+}
+.chat-option{
+  padding-top: 10px;
+  color: #ccc;
+}
+.chat-header{
+  order: 1;
+}
+.chat-header strong{
+  font-size: 15px;
+  margin-left: 10px;
+}
+.chat-messages{
+  order: 2;
+  background-color: #e5ddd5;
+  height: 100%;
+}
+.chat-footer{
+  background-color: #f5f1ee;
+  min-height: 50px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  order: 3;
+}
+.chat-icon span{
+  color: #ccc;
+  font-size: 25px;
+}
+.chat-field input{
+  border-width: 0;
 }
