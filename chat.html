@@ -65,16 +65,19 @@
 										<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>
 									</div>
 									<div class="col-md-10 chat-field">
-										<input type="text" class="form-control" placeholder="Escribe un mensaje">
+										<input id="txtMsg" type="text" class="form-control" placeholder="Escribe un mensaje">
 									</div>
 									<div class="col-md-1 chat-icon chat-send">
-										<a href="#"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>
+										<a id="btnSendMsg" href="#"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="row chat-messages">
-							<div class="col-md-12"></div>
+							<div class="col-md-12">
+								<ul id="listMsg">
+								</ul>
+							</div>
 						</div>
           </div>
         </div>
@@ -83,6 +86,22 @@
 		<script>
 			$(document).ready(function(){
 
+			var cleartxtMsg = function(){
+				$('#txtMsg').val('');
+			}
+
+			var sendMsg = function(){
+				var list = $('#listMsg');
+				var msg = $('#txtMsg').val();
+				list.append('<li><span>' + msg + '</span></li>');
+				cleartxtMsg();
+			}
+
+				$('#btnSendMsg').on('click', sendMsg);
+				$('#txtMsg').on('keypress', function(){
+					if(event.which == 13)
+						sendMsg();
+				});
 			});
 		</script>
 	</body>

@@ -155,3 +155,15 @@ body{
 .chat-field input{
   border-width: 0;
 }
+ul#listMsg li{
+   list-style-type: none;
+   text-align: right;
+   padding-top: 5px;
+   padding-bottom: 5px
+}
+ul#listMsg li span{
+  background-color: #90EE90;
+  border-radius: 5px;
+  display: inline-block;
+  padding: 10px;
+}
