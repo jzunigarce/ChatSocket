@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="css/main.css">
 		<script src="js/jquery-3.1.0.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
 		<title>-Welcome</title>
 	</head>
 	<body class="chat-body">
@@ -85,17 +86,18 @@
     </div>
 		<script>
 			$(document).ready(function(){
+				var socket = io();
+				var cleartxtMsg = function(){
+					$('#txtMsg').val('');
+				}
 
-			var cleartxtMsg = function(){
-				$('#txtMsg').val('');
-			}
-
-			var sendMsg = function(){
-				var list = $('#listMsg');
-				var msg = $('#txtMsg').val();
-				list.append('<li><span>' + msg + '</span></li>');
-				cleartxtMsg();
-			}
+				var sendMsg = function(){
+					var list = $('#listMsg');
+					var msg = $('#txtMsg').val();
+					socket.emit('sending', msg);
+					list.append('<li><span>' + msg + '</span></li>');
+					cleartxtMsg();
+				}
 
 				$('#btnSendMsg').on('click', sendMsg);
 				$('#txtMsg').on('keypress', function(){
