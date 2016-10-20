@@ -1,5 +1,5 @@
 {
-  "name": "Chat socket",
+  "name": "chat-socket",
   "version": "0.0.1",
   "description": "My first chat  app",
   "dependencies": {

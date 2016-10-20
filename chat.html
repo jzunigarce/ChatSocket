@@ -91,13 +91,22 @@
 					$('#txtMsg').val('');
 				}
 
+				var appendMsg = function(msg, receive){
+						var list = $('#listMsg');
+						classReceive = receive ? 'class="left-msg"' : '';
+						list.append('<li ' + classReceive + '"><span>' + msg + '</span></li>');
+				}
+
 				var sendMsg = function(){
-					var list = $('#listMsg');
 					var msg = $('#txtMsg').val();
 					socket.emit('sending', msg);
-					list.append('<li><span>' + msg + '</span></li>');
+					appendMsg(msg, false);
 					cleartxtMsg();
 				}
+
+				socket.on('sending', function(msg){
+					appendMsg(msg, true);
+				});
 
 				$('#btnSendMsg').on('click', sendMsg);
 				$('#txtMsg').on('keypress', function(){

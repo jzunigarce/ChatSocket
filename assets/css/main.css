@@ -168,9 +168,6 @@ ul#listMsg li span{
   padding: 6px 7px 8px 9px;
   position: relative;
 }
-ul#listMsg li:nth-child(odd) span{
-  background-color: #FFFFFF;
-}
 ul#listMsg li span:before{
   content: "";
   width: 0;
@@ -184,6 +181,12 @@ ul#listMsg li span:before{
 /*
  *Arrow
  */
-ul#listMsg li:nth-child(odd) span:before{
+ul#listMsg li.left-msg span:before{
   border-color: transparent transparent transparent #FFFFFF;
+}
+ul#listMsg li.left-msg{
+  text-align: left;
+}
+ul#listMsg li.left-msg span{
+    background-color: #FFFFFF;
 }
