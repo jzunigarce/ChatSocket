@@ -19,7 +19,6 @@ io.on('connection', function(socket){
     console.log('User desconnected');
   });
   socket.on('sending', function(msg){
-    //io.emit('sending', msg);
     socket.broadcast.emit('sending', msg);
   });
 });
