@@ -182,7 +182,9 @@ ul#listMsg li span:before{
  *Arrow
  */
 ul#listMsg li.left-msg span:before{
-  border-color: transparent transparent transparent #FFFFFF;
+  border-width: 5px 11px 5px 0;
+  border-color: transparent #FFFFFF transparent transparent ;
+  left: -11px;
 }
 ul#listMsg li.left-msg{
   text-align: left;
