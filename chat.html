@@ -95,6 +95,8 @@
 						var list = $('#listMsg');
 						classReceive = receive ? 'class="left-msg"' : '';
 						list.append('<li ' + classReceive + '"><span>' + msg + '</span></li>');
+						var chatPanel = $('chat-messages');
+						chatPanel.scrollTop = chatPanel.scrollHeight;
 				}
 
 				var sendMsg = function(){

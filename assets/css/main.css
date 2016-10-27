@@ -140,6 +140,8 @@ body{
   order: 2;
   background-color: #e5ddd5;
   height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .chat-footer{
   background-color: #f5f1ee;
