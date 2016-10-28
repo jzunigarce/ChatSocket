@@ -40,6 +40,7 @@ io.on('connection', function(socket){
     console.log("Datos a enviar" + data);
     socket.emit('signIn', data);
   });
+
   socket.on('disconnect', function(){
     console.log('User desconnected');
   });

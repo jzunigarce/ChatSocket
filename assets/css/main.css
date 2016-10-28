@@ -194,3 +194,22 @@ ul#listMsg li.left-msg{
 ul#listMsg li.left-msg span{
     background-color: #FFFFFF;
 }
+
+/*
+ *Float Alert
+ */
+.alert-float{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -73px;
+  z-index: 5000;
+  opacity: 0;
+  -webkit-transition: opacity 0.15s linear;
+  -moz-transition: opacity 0.15s linear;
+  -o-transition: opacity 0.15s linear;
+  transition: opacity 0.15s linear;
+}
+.alert-display{
+  opacity: 1;
+}

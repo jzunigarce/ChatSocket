@@ -8,13 +8,18 @@
 		<script src="js/jquery-3.1.0.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.28/vue.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.28/vue.js"></script>
 		<title>Login</title>
 	</head>
-	<body>
+	<body id="chatApp">
 		<section class="container">
 			<div class="row login">
 				<div class="col-md-offset-4 col-md-4 col-lg-4">
+					<div id="alertError" class="alert alert-danger alert-dismissible alert-float "
+						v-bind:class="{'alert-display': errorClassAlert}"
+						role="alert">
+						{{textError}}
+					</div>
 					<form id="frmLogin" class="form-horizontal" @submit.prevent="signUp">
 						<div class="form-group input-group">
 							<input id="txtUser" type="text" class="form-control" aria-describedby="addon1" placeholder="Enter your name" v-model="userName">
@@ -28,19 +33,41 @@
 			</div>
 		</section>
 		<script>
-			var socket = io();
-			new Vue({
-				"el": "#frmLogin",
-				"methods":{
-					"signUp": function(){
-						console.log(this.userName);
-						socket.emit('signIn', this.userName);
+			(function(){
+				var socket = io();
+
+				vm = new Vue({
+					"el": "#chatApp",
+					data: {
+						'errorClassAlert': false,
+						'textError': '',
+						'userName': ''
+					},
+					"methods":{
+						"signUp": function(){
+							if(this.userName.trim().length === 0)
+								this.showError('Debe de ingresar un nombre de usuario');
+							else
+								socket.emit('signIn', this.userName);
+						},
+						"showError": function(msj){
+							this.textError = msj;
+							this.errorClassAlert = true;
+							var self = this;
+							setTimeout(function(){
+								self.errorClassAlert = false;
+							}, 3000);
+						}
 					}
-				}
-			});
-			socket.on('signIn', function(data){
-				console.log(data);
-			});
+				});
+
+				socket.on('signIn', function(data){
+					if(data === null){
+						vm.showError('Nombre de usuario no disponible');
+					}
+				});
+
+			})();
 		</script>
 	</body>
 </html>
