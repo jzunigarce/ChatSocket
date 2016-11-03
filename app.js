@@ -3,6 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var users = [];
+
 app.use(express.static(__dirname + '/assets'));
 //Routes
 app.get('/', function(req, res){
@@ -33,16 +34,24 @@ var isExists = function(userName){
 io.on('connection', function(socket){
   socket.on('signIn', function(userName){
     var data;
+    var exists = true;
     if(!isExists(userName)){
       data = createUser(userName, socket.id);
       users.push(data);
+      exists = false;
+      socket.broadcast.emit('userConnect', {'users': users});
     }
-    console.log("Datos a enviar" + data);
-    socket.emit('signIn', data);
+    socket.emit('signIn', {'exists': exists, 'users': users, 'user': data});
   });
 
   socket.on('disconnect', function(){
     console.log('User desconnected');
+    users.forEach(function(el, index, a){
+      console.log(users[index]);
+      if(el.id === socket.id)
+        users.splice(index, 1);
+    });
+    socket.broadcast.emit('logOut', {'users': users});
   });
   socket.on('sending', function(msg){
     socket.broadcast.emit('sending', msg);

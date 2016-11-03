@@ -11,44 +11,143 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.28/vue.js"></script>
 		<title>Login</title>
 	</head>
-	<body id="chatApp">
-		<section class="container">
-			<div class="row login">
-				<div class="col-md-offset-4 col-md-4 col-lg-4">
-					<div id="alertError" class="alert alert-danger alert-dismissible alert-float "
-						v-bind:class="{'alert-display': errorClassAlert}"
-						role="alert">
-						{{textError}}
+	<body id="chatApp" v-bind:class="{'chat-body': !showLogin}">
+		<template v-if="showLogin">
+			<section class="container" >
+				<div class="row login">
+					<div class="col-md-offset-4 col-md-4 col-lg-4">
+						<div id="alertError" class="alert alert-danger alert-dismissible alert-float "
+							v-bind:class="{'alert-display': errorClassAlert}"
+							role="alert">
+							{{textError}}
+						</div>
+						<form id="frmLogin" class="form-horizontal" @submit.prevent="signUp">
+							<div class="form-group input-group">
+								<input id="txtUser" type="text" class="form-control" aria-describedby="addon1" placeholder="Enter your name" v-model="userName">
+								 <span class="input-group-addon glyphicon glyphicon-user" id="addon1"></span>
+							</div>
+							<div class="form-group">
+								<button id="btnLogin" class="btn btn-default btn-block btn-login">Log in</button>
+							</div>
+						</form>
 					</div>
-					<form id="frmLogin" class="form-horizontal" @submit.prevent="signUp">
-						<div class="form-group input-group">
-							<input id="txtUser" type="text" class="form-control" aria-describedby="addon1" placeholder="Enter your name" v-model="userName">
-							 <span class="input-group-addon glyphicon glyphicon-user" id="addon1"></span>
-						</div>
-						<div class="form-group">
-							<button id="btnLogin" class="btn btn-default btn-block btn-login">Log in</button>
-						</div>
-					</form>
 				</div>
-			</div>
-		</section>
+			</section>
+		</template>
+		<template v-else>
+			<div class="content">
+	      <section class="container app">
+	        <div class="row">
+	          <div class="col-md-4 contact">
+	            <div class="row">
+	              <div class="col-md-12 header">
+	                  <span class="glyphicon glyphicon-user avatar avatar-user" aria-hidden="true"></span>
+	                  <span class="glyphicon glyphicon-comment right icon-comment" aria-hidden="true"></span>
+	              </div>
+	              <div class="col-md-12 body-contact">
+									<form action="" class="search">
+										<input type="text" class="form-control" placeholder="Buscar o iniciar nuevo chat">
+									</form>
+									<div v-for="user in users" v-if="user.name != userName" class="row contact-row">
+										<div class="col-md-2">
+											<span class="glyphicon glyphicon-user avatar avatar-contact" v-bind:style="{color: user.color}" aria-hidden="true"></span>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="col-md-12 contact-name">
+													<strong>{{user.name}}</strong>
+												</div>
+												<div class="col-md-12 contact-last-msj">
+													<p>Holis como están</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-2 contact-chat-time">
+											<small>12:46</small>
+										</div>
+									</div>
+	              </div>
+	            </div>
+	          </div>
+	          <div class="col-md-8 chat">
+	          	<div class="row header chat-header">
+	          		<div class="col-md-12 ">
+									<div class="row">
+										<div class="col-md-11">
+											<span class="glyphicon glyphicon-user avatar avatar-contact" :style="{'background-color': 'rgb(' + userData.color + ')', 'border-color': 'rgb(' + userData.color + ')'}" aria-hidden="true"></span>
+											<strong>{{userData.name}}</strong>
+										</div>
+										<div class="col-md-1 text-right chat-option">
+											<span class="glyphicon glyphicon-option-vertical option" aria-hidden="true"></span>
+										</div>
+									</div>
+	          		</div>
+	          	</div>
+							<div class="row chat-footer">
+								<div class="col-md-12">
+									<div class="row">
+										<div class="col-md-1 chat-icon">
+											<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>
+										</div>
+										<div class="col-md-10 chat-field">
+											<input id="txtMsg" type="text" class="form-control" placeholder="Escribe un mensaje">
+										</div>
+										<div class="col-md-1 chat-icon chat-send">
+											<a id="btnSendMsg" href="#"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row chat-messages">
+								<div class="col-md-12">
+									<ul id="listMsg">
+									</ul>
+								</div>
+							</div>
+	          </div>
+	        </div>
+	  		</section>
+	    </div>
+		</template>
 		<script>
 			(function(){
-				var socket = io();
+				var socket = null;
 
 				vm = new Vue({
 					"el": "#chatApp",
 					data: {
 						'errorClassAlert': false,
 						'textError': '',
-						'userName': ''
+						'userName': '',
+						'showLogin': true,
+						'users': [],
+						'userData': null
 					},
 					"methods":{
 						"signUp": function(){
 							if(this.userName.trim().length === 0)
 								this.showError('Debe de ingresar un nombre de usuario');
-							else
+							else{
+								if(socket == null){
+									socket = io();
+									socket.on('signIn', function(data){
+										if(data.exists){
+											vm.showError('Nombre de usuario no disponible');
+										}else{
+											vm.users = data.users;
+											vm.userData = data.user;
+											vm.showLogin = false;
+											socket.on('logOut', function(data){
+												vm.users = data.users;
+											});
+										}
+									});
+									socket.on('userConnect', function(data){
+										vm.users = data.users;
+									});
+								}
 								socket.emit('signIn', this.userName);
+							}
 						},
 						"showError": function(msj){
 							this.textError = msj;
@@ -60,13 +159,6 @@
 						}
 					}
 				});
-
-				socket.on('signIn', function(data){
-					if(data === null){
-						vm.showError('Nombre de usuario no disponible');
-					}
-				});
-
 			})();
 		</script>
 	</body>
