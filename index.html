@@ -50,12 +50,15 @@
 									</form>
 									<div v-for="user in users" v-if="user.name != userName" class="row contact-row">
 										<div class="col-md-2">
-											<span class="glyphicon glyphicon-user avatar avatar-contact" v-bind:style="{color: user.color}" aria-hidden="true"></span>
+											<span class="glyphicon glyphicon-user avatar avatar-contact"
+											:style="{'background-color': 'rgb(' + user.color + ')', 'border-color': 'rgb(' + user.color + ')'}"
+											aria-hidden="true"></span>
 										</div>
 										<div class="col-md-8">
 											<div class="row">
 												<div class="col-md-12 contact-name">
 													<strong>{{user.name}}</strong>
+													<a href="#"></a>
 												</div>
 												<div class="col-md-12 contact-last-msj">
 													<p>Holis como están</p>
@@ -121,7 +124,8 @@
 						'userName': '',
 						'showLogin': true,
 						'users': [],
-						'userData': null
+						'userData': null,
+						'msjs': []
 					},
 					"methods":{
 						"signUp": function(){
@@ -146,7 +150,7 @@
 										vm.users = data.users;
 									});
 								}
-								socket.emit('signIn', this.userName);
+								socket.emit('signIn', {'userName': this.userName});
 							}
 						},
 						"showError": function(msj){

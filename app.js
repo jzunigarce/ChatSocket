@@ -32,16 +32,17 @@ var isExists = function(userName){
 
 //Socket
 io.on('connection', function(socket){
-  socket.on('signIn', function(userName){
-    var data;
+  socket.on('signIn', function(data){
+    var userName = data.userName;
+    var user;
     var exists = true;
     if(!isExists(userName)){
-      data = createUser(userName, socket.id);
-      users.push(data);
+      user = createUser(userName, socket.id);
+      users.push(user);
       exists = false;
       socket.broadcast.emit('userConnect', {'users': users});
     }
-    socket.emit('signIn', {'exists': exists, 'users': users, 'user': data});
+    socket.emit('signIn', {'exists': exists, 'users': users, 'user': user});
   });
 
   socket.on('disconnect', function(){

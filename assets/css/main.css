@@ -109,6 +109,7 @@ body{
 .contact-row{
   border-top: 1px solid #EEEEEE;
   border-bottom: 1px solid #EEEEEE;
+  cursor: pointer;
   padding-top: 10px;
   padding-bottom: 4px;
 }
