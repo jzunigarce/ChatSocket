@@ -8,114 +8,223 @@
 		<script src="js/jquery-3.1.0.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
-		<title>-Welcome</title>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.28/vue.js"></script>
+		<title>Login</title>
 	</head>
-	<body class="chat-body">
-    <div class="content">
-      <section class="container app">
-        <div class="row">
-          <div class="col-md-4 contact">
-            <div class="row">
-              <div class="col-md-12 header">
-                  <span class="glyphicon glyphicon-user avatar avatar-user" aria-hidden="true"></span>
-                  <span class="glyphicon glyphicon-comment right icon-comment" aria-hidden="true"></span>
-              </div>
-              <div class="col-md-12 body-contact">
-								<form action="" class="search">
-									<input type="text" class="form-control" placeholder="Burcar o iniciar nuevo chat">
-								</form>
-								<div class="row contact-row">
-									<div class="col-md-2">
-										<span class="glyphicon glyphicon-user avatar avatar-contact" aria-hidden="true"></span>
-									</div>
-									<div class="col-md-8">
-										<div class="row">
-											<div class="col-md-12 contact-name">
-												<strong>Yepis y Andrea!!</strong>
-											</div>
-											<div class="col-md-12 contact-last-msj">
-												<p>Holis como están</p>
+	<body id="chatApp" v-bind:class="{'chat-body': !showLogin}">
+		<template v-if="showLogin">
+			<section class="container" >
+				<div class="row login">
+					<div class="col-md-offset-4 col-md-4 col-lg-4">
+						<div id="alertError" class="alert alert-danger alert-dismissible alert-float "
+							v-bind:class="{'alert-display': errorClassAlert}"
+							role="alert">
+							{{textError}}
+						</div>
+						<form id="frmLogin" class="form-horizontal" @submit.prevent="signUp">
+							<div class="form-group input-group">
+								<input id="txtUser" type="text" class="form-control" aria-describedby="addon1" placeholder="Enter your name" v-model="userName">
+								 <span class="input-group-addon glyphicon glyphicon-user" id="addon1"></span>
+							</div>
+							<div class="form-group">
+								<button id="btnLogin" class="btn btn-default btn-block btn-login">Log in</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</section>
+		</template>
+		<template v-else>
+			<div class="content">
+	      <section class="container app">
+	        <div class="row">
+	          <div class="col-md-4 contact">
+	            <div class="row">
+	              <div class="col-md-12 header">
+	                  <span class="glyphicon glyphicon-user avatar avatar-user" aria-hidden="true"></span>
+	                  <span class="glyphicon glyphicon-comment right icon-comment" aria-hidden="true"></span>
+	              </div>
+	              <div class="col-md-12 body-contact">
+									<form action="" class="search">
+										<input type="text" class="form-control" placeholder="Buscar o iniciar nuevo chat">
+									</form>
+									<div v-for="user in users"
+										v-if="user.name != userName"
+										class="row contact-row"
+										:class="curret-chat-active: toggleSelectedUserChat"
+										@click="showUserChat(user.socketId)">
+										<div class="col-md-2">
+											<span class="glyphicon glyphicon-user avatar avatar-contact"
+											:style="{'background-color': 'rgb(' + user.color + ')', 'border-color': 'rgb(' + user.color + ')'}"
+											aria-hidden="true"></span>
+										</div>
+										<div class="col-md-8">
+											<div class="row">
+												<div class="col-md-12 contact-name">
+													<strong>{{user.name}}</strong>
+													<a href="#"></a>
+												</div>
+												<div class="col-md-12 contact-last-msj">
+													<p>Holis como están</p>
+												</div>
 											</div>
 										</div>
+										<div class="col-md-2 contact-chat-time">
+											<small>12:46</small>
+										</div>
 									</div>
-									<div class="col-md-2 contact-chat-time">
-										<small>12:46</small>
+	              </div>
+	            </div>
+	          </div>
+	          <div class="col-md-8 chat">
+	          	<div class="row header chat-header">
+	          		<div class="col-md-12 ">
+									<div class="row">
+										<div class="col-md-11">
+											<span class="glyphicon glyphicon-user avatar avatar-contact" :style="{'background-color': 'rgb(' + userData.color + ')', 'border-color': 'rgb(' + userData.color + ')'}" aria-hidden="true"></span>
+											<strong>{{userData.name}}</strong>
+										</div>
+										<div class="col-md-1 text-right chat-option">
+											<span class="glyphicon glyphicon-option-vertical option" aria-hidden="true"></span>
+										</div>
 									</div>
-								</div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-8 chat">
-          	<div class="row header chat-header">
-          		<div class="col-md-12 ">
-								<div class="row">
-									<div class="col-md-11">
-										<span class="glyphicon glyphicon-user avatar avatar-contact" aria-hidden="true"></span>
-										<strong>Yepis y Andrea!!</strong>
-									</div>
-									<div class="col-md-1 text-right chat-option">
-										<span class="glyphicon glyphicon-option-vertical option" aria-hidden="true"></span>
-									</div>
-								</div>
-          		</div>
-          	</div>
-						<div class="row chat-footer">
-							<div class="col-md-12">
-								<div class="row">
-									<div class="col-md-1 chat-icon">
-										<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>
-									</div>
-									<div class="col-md-10 chat-field">
-										<input id="txtMsg" type="text" class="form-control" placeholder="Escribe un mensaje">
-									</div>
-									<div class="col-md-1 chat-icon chat-send">
-										<a id="btnSendMsg" href="#"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>
+	          		</div>
+	          	</div>
+							<div class="row chat-footer">
+								<div class="col-md-12">
+									<div class="row">
+										<div class="col-md-1 chat-icon">
+											<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>
+										</div>
+										<div class="col-md-10 chat-field">
+											<input id="txtMsg" type="text"
+												class="form-control"
+												placeholder="Escribe un mensaje"
+												v-model="userMsg">
+										</div>
+										<div class="col-md-1 chat-icon chat-send">
+											<a id="btnSendMsg" href="#"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row chat-messages">
-							<div class="col-md-12">
-								<ul id="listMsg">
-								</ul>
+							<div class="row chat-messages">
+								<div class="col-md-12">
+									<ul id="listMsg" v-if="currentUser > -1">
+										<li v-for="msj in msgs[currentUser].msj"></li>
+									</ul>
+								</div>
 							</div>
-						</div>
-          </div>
-        </div>
-  		</section>
-    </div>
+	          </div>
+	        </div>
+	  		</section>
+	    </div>
+		</template>
 		<script>
-			$(document).ready(function(){
-				var socket = io();
-				var cleartxtMsg = function(){
-					$('#txtMsg').val('');
+			(function(){
+				var socket = null;
+
+				var checkTime = function(i) {
+					return i < 10 ? ("0" + i) : i;
 				}
 
-				var appendMsg = function(msg, receive){
-						var list = $('#listMsg');
-						classReceive = receive ? 'class="left-msg"' : '';
-						list.append('<li ' + classReceive + '"><span>' + msg + '</span></li>');
-						var chatPanel = $('chat-messages');
-						chatPanel.scrollTop = chatPanel.scrollHeight;
+				var startTime = function() {
+			    var today = new Date();
+			    var h = today.getHours();
+			    var m = today.getMinutes();
+			    var s = today.getSeconds();
+
+			    m = checkTime(m);
+			    s = checkTime(s);
+			    return h + ":" + m + ":" + s;
 				}
 
-				var sendMsg = function(){
-					var msg = $('#txtMsg').val();
-					socket.emit('sending', msg);
-					appendMsg(msg, false);
-					cleartxtMsg();
-				}
+				vm = new Vue({
+					"el": "#chatApp",
+					data: {
+						'errorClassAlert': false,
+						'textError': '',
+						'userName': '',
+						'showLogin': true,
+						'users': [],
+						'userData': null,
+						'msgs': [],
+						'currentUser': -1,
+						'userMsg': '',
+						'isSelected': false
+					},
+					'computed': {
+						"toggleSelectedUserChat": function(){
+							this.isSelected = !this.isSelected;
+							return this.isSelected;
+						}
+					},
+					"methods":{
+						"signUp": function(){
+							if(this.userName.trim().length === 0)
+								this.showError('Debe de ingresar un nombre de usuario');
+							else{
+								if(socket == null){
+									socket = io();
+									var self = this;
+									socket.on('signIn', function(data){
+										if(data.exists){
+											self.showError('Nombre de usuario no disponible');
+										}else{
+											self.users = data.users;
+											self.userData = data.user;
+											self.showLogin = false;
+											socket.on('logOut', function(data){
+												self.users = data.users;
+											});
+										}
+									});
+									socket.on('userConnect', function(data){
+										self.users = data.users;
+									});
+									socket.on('sending', function(data){
+										self.showUserChat(data.sender);
+								    self.pushMsg(data.msgChat);
+								  });
+								}
+								socket.emit('signIn', {'userName': this.userName});
+							}
+						},
+						"pushMsg": function(currentMsg){
+							this.msgs[this.currentUser].msj.push(currentMsg);
+						},
+						"showError": function(msj){
+							this.textError = msj;
+							this.errorClassAlert = true;
+							var self = this;
+							setTimeout(function(){
+								self.errorClassAlert = false;
+							}, 3000);
+						},
+						"searchUser": function(current){
+							var index = 0;
+							for(var msj in this.msgs){
+								if(this.msgs[msj].socketId == current.socketId)
+									break;
+								index++;
+							}
+						},
+						"showUserChat": function(current){
+							this.currentUser = this.searchUser(current);
+							if(this.currentUser === this.msgs.length)
+								this.msgs.pop({'socketId': current.socketId, 'msj': []});
 
-				socket.on('sending', function(msg){
-					appendMsg(msg, true);
+						},
+						"sendMsg": function(){
+							if(this.currentUser > -1){
+								var currentMsg =  {'msg': this.userMsg, 'date': startTime()}
+							  this.pushMsg(data.msgChat);
+								socket.emit('sending', {'sender': this.userData.id , 'receiver': this.msgs[this.currentUser].socketId, 'msgChat': currentMsg});
+							}
+						}
+					}
 				});
-
-				$('#btnSendMsg').on('click', sendMsg);
-				$('#txtMsg').on('keypress', function(){
-					if(event.which == 13)
-						sendMsg();
-				});
-			});
+			})();
 		</script>
 	</body>
 </html>

@@ -17,13 +17,13 @@
 				<div class="row login">
 					<div class="col-md-offset-4 col-md-4 col-lg-4">
 						<div id="alertError" class="alert alert-danger alert-dismissible alert-float "
-							v-bind:class="{'alert-display': errorClassAlert}"
+							v-bind:class="{'alert-display': errorAlert}"
 							role="alert">
-							{{textError}}
+							{{error}}
 						</div>
 						<form id="frmLogin" class="form-horizontal" @submit.prevent="signUp">
 							<div class="form-group input-group">
-								<input id="txtUser" type="text" class="form-control" aria-describedby="addon1" placeholder="Enter your name" v-model="userName">
+								<input id="txtUser" type="text" class="form-control" aria-describedby="addon1" placeholder="Enter your name" v-model="nick">
 								 <span class="input-group-addon glyphicon glyphicon-user" id="addon1"></span>
 							</div>
 							<div class="form-group">
@@ -48,26 +48,23 @@
 									<form action="" class="search">
 										<input type="text" class="form-control" placeholder="Buscar o iniciar nuevo chat">
 									</form>
-									<div v-for="user in users" v-if="user.name != userName" class="row contact-row">
-										<div class="col-md-2">
-											<span class="glyphicon glyphicon-user avatar avatar-contact"
-											:style="{'background-color': 'rgb(' + user.color + ')', 'border-color': 'rgb(' + user.color + ')'}"
-											aria-hidden="true"></span>
-										</div>
-										<div class="col-md-8">
-											<div class="row">
-												<div class="col-md-12 contact-name">
-													<strong>{{user.name}}</strong>
-													<a href="#"></a>
-												</div>
-												<div class="col-md-12 contact-last-msj">
-													<p>Holis como están</p>
+									<div v-for="u in users"
+										class="row contact-row">
+										<template v-if="u.nick != user.nick">
+											<div class="col-md-2">
+												<span class="glyphicon glyphicon-user avatar avatar-contact"
+												:style="{'background-color': 'rgb(' + u.color + ')', 'border-color': 'rgb(' + u.color + ')'}"
+												aria-hidden="true"></span>
+											</div>
+											<div class="col-md-8">
+												<div class="row">
+													<div class="col-md-12 contact-name">
+														<strong>{{u.nick}}</strong>
+														<a href="#"></a>
+													</div>
 												</div>
 											</div>
-										</div>
-										<div class="col-md-2 contact-chat-time">
-											<small>12:46</small>
-										</div>
+										</template>
 									</div>
 	              </div>
 	            </div>
@@ -77,8 +74,8 @@
 	          		<div class="col-md-12 ">
 									<div class="row">
 										<div class="col-md-11">
-											<span class="glyphicon glyphicon-user avatar avatar-contact" :style="{'background-color': 'rgb(' + userData.color + ')', 'border-color': 'rgb(' + userData.color + ')'}" aria-hidden="true"></span>
-											<strong>{{userData.name}}</strong>
+											<span class="glyphicon glyphicon-user avatar avatar-contact" :style="{'background-color': 'rgb(' + user.color + ')', 'border-color': 'rgb(' + user.color + ')'}" aria-hidden="true"></span>
+											<strong>{{user.nick}}</strong>
 										</div>
 										<div class="col-md-1 text-right chat-option">
 											<span class="glyphicon glyphicon-option-vertical option" aria-hidden="true"></span>
@@ -89,21 +86,41 @@
 							<div class="row chat-footer">
 								<div class="col-md-12">
 									<div class="row">
-										<div class="col-md-1 chat-icon">
-											<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>
-										</div>
-										<div class="col-md-10 chat-field">
-											<input id="txtMsg" type="text" class="form-control" placeholder="Escribe un mensaje">
-										</div>
-										<div class="col-md-1 chat-icon chat-send">
-											<a id="btnSendMsg" href="#"><span class="glyphicon glyphicon-send" aria-hidden="true"></span></a>
-										</div>
+										<form id="frmMsg"  @submit.prevent="sendMsg">
+											<div class="col-md-1 chat-icon">
+												<span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>
+											</div>
+											<div class="col-md-10 chat-field">
+												<input id="txtMsg" type="text"
+													class="form-control"
+													placeholder="Escribe un mensaje"
+													v-model="msg">
+											</div>
+											<div class="col-md-1 chat-icon chat-send">
+												<button id="btnSendMsg"
+												class="btn-sender"
+												v-bind:disabled="msg==''">
+													<span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+												</button>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>
 							<div class="row chat-messages">
 								<div class="col-md-12">
 									<ul id="listMsg">
+										<template v-for="m in msgs">
+											<li class="{{m.sender != user.nick ? 'left-msg' : '' }}">
+												<span>
+													<h3 class="sender"
+													:style="{'color': 'rgb(' + m.color + ')'}">
+													{{m.sender != user.nick ? m.msg : ''}}</h3>
+													<span class="msg">{{m.msg}}</span>
+													<small class="time">{{m.msg}}</small>
+												</span>
+											</li>
+										</template>
 									</ul>
 								</div>
 							</div>
@@ -112,58 +129,6 @@
 	  		</section>
 	    </div>
 		</template>
-		<script>
-			(function(){
-				var socket = null;
-
-				vm = new Vue({
-					"el": "#chatApp",
-					data: {
-						'errorClassAlert': false,
-						'textError': '',
-						'userName': '',
-						'showLogin': true,
-						'users': [],
-						'userData': null,
-						'msjs': []
-					},
-					"methods":{
-						"signUp": function(){
-							if(this.userName.trim().length === 0)
-								this.showError('Debe de ingresar un nombre de usuario');
-							else{
-								if(socket == null){
-									socket = io();
-									socket.on('signIn', function(data){
-										if(data.exists){
-											vm.showError('Nombre de usuario no disponible');
-										}else{
-											vm.users = data.users;
-											vm.userData = data.user;
-											vm.showLogin = false;
-											socket.on('logOut', function(data){
-												vm.users = data.users;
-											});
-										}
-									});
-									socket.on('userConnect', function(data){
-										vm.users = data.users;
-									});
-								}
-								socket.emit('signIn', {'userName': this.userName});
-							}
-						},
-						"showError": function(msj){
-							this.textError = msj;
-							this.errorClassAlert = true;
-							var self = this;
-							setTimeout(function(){
-								self.errorClassAlert = false;
-							}, 3000);
-						}
-					}
-				});
-			})();
-		</script>
+		<script src="js/main.js"></script>
 	</body>
 </html>

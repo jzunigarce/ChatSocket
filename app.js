@@ -13,17 +13,21 @@ app.get('/chat', function(req, res){
   res.sendFile(__dirname + '/chat.html');
 });
 
-var createUser = function(userName, socketId){
+var randomColor = function() {
   var colors = [];
   for(var i = 0; i < 3; i++)
     colors.push(Math.floor(Math.random() * 254));
-  return {'id': socketId, 'name': userName, 'color': colors.join(',')};
+  return colors.join(',');
+};
+
+var createUser = function(nick, id){
+  return {'id': id, 'nick': nick, 'color': randomColor()};
 }
 
-var isExists = function(userName){
+var isExists = function(nick){
   var exists = false;
   for(i in users){
-    if(users[i].name == userName){
+    if(users[i].nick == nick){
       return true;
     }
   }
@@ -33,29 +37,28 @@ var isExists = function(userName){
 //Socket
 io.on('connection', function(socket){
   socket.on('signIn', function(data){
-    var userName = data.userName;
+    var nick = data.nick;
     var user;
     var exists = true;
-    if(!isExists(userName)){
-      user = createUser(userName, socket.id);
+    if(!isExists(nick)){
+      user = createUser(nick, socket.id);
       users.push(user);
       exists = false;
       socket.broadcast.emit('userConnect', {'users': users});
     }
-    socket.emit('signIn', {'exists': exists, 'users': users, 'user': user});
+    socket.emit('signIn', {'error': exists, 'users': users, 'user': user});
   });
 
   socket.on('disconnect', function(){
     console.log('User desconnected');
     users.forEach(function(el, index, a){
-      console.log(users[index]);
       if(el.id === socket.id)
         users.splice(index, 1);
     });
     socket.broadcast.emit('logOut', {'users': users});
   });
-  socket.on('sending', function(msg){
-    socket.broadcast.emit('sending', msg);
+  socket.on('sending', function(data){
+    socket.broadcast.emit('sending', data);
   });
 });
 

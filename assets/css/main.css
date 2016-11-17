@@ -164,27 +164,38 @@ ul#listMsg li{
    padding-top: 5px;
    padding-bottom: 5px
 }
-ul#listMsg li span{
-  background-color: #90EE90;
+ul#listMsg li > span{
+  background-color: #dcf8c6;
   border-radius: 5px;
   display: inline-block;
   padding: 6px 7px 8px 9px;
   position: relative;
 }
-ul#listMsg li span:before{
+ul#listMsg li > span:before{
   content: "";
   width: 0;
   position: absolute;
   border-style: solid;
   border-width: 5px 0 5px 11px;
-  border-color: transparent transparent transparent #90ee90;
+  border-color: transparent transparent transparent #dcf8c6;
   right: -11px;
   bottom: 3px;
+}
+ul#listMsg li > span h3{
+  margin: 0;
+  font-size: 16px;
+}
+ul#listMsg li.left-msg > span h3{
+  text-align: left;
+}
+ul#listMsg li > span small{
+  color: rgba(0, 0, 0, 0.5);
+  margin-left: 20px;
 }
 /*
  *Arrow
  */
-ul#listMsg li.left-msg span:before{
+ul#listMsg li.left-msg > span:before{
   border-width: 5px 11px 5px 0;
   border-color: transparent #FFFFFF transparent transparent ;
   left: -11px;
@@ -192,7 +203,7 @@ ul#listMsg li.left-msg span:before{
 ul#listMsg li.left-msg{
   text-align: left;
 }
-ul#listMsg li.left-msg span{
+ul#listMsg li.left-msg > span{
     background-color: #FFFFFF;
 }
 
@@ -213,4 +224,14 @@ ul#listMsg li.left-msg span{
 }
 .alert-display{
   opacity: 1;
+}
+.curret-chat-active{
+  background-color: #E9EBEB;
+}
+.btn-sender{
+  background-color: #f5f1ee;
+  border: 0;
+}
+.sender{
+  text-align: right;
 }
