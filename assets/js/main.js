@@ -67,7 +67,7 @@
         }
       },
       "sendMsg": function(){
-        var message =  {'sender': this.user.nick, 'msg': this.msg, 'color': this.user.color, 'date': startTime()}
+        var message =  {'sender': this.user.nick, 'msg': this.msg, 'color': this.user.color, 'time': startTime()}
         this.pushMsg(message);
         socket.emit('sending',  message);
         this.msg = '';

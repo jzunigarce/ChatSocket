@@ -115,9 +115,9 @@
 												<span>
 													<h3 class="sender"
 													:style="{'color': 'rgb(' + m.color + ')'}">
-													{{m.sender != user.nick ? m.msg : ''}}</h3>
+													{{m.sender != user.nick ? m.sender : ''}}</h3>
 													<span class="msg">{{m.msg}}</span>
-													<small class="time">{{m.msg}}</small>
+													<small class="time">{{m.time}}</small>
 												</span>
 											</li>
 										</template>
